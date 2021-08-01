@@ -1,0 +1,26 @@
+{
+  "name": "filesharingapp",
+  "version": "1.0.0",
+  "description": "An app for sahring files between 2 computers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deadro22/file-sharing-app.git"
+  },
+  "author": "Oussema Rifi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deadro22/file-sharing-app/issues"
+  },
+  "homepage": "https://github.com/deadro22/file-sharing-app#readme",
+  "dependencies": {
+    "aws-sdk": "^2.958.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1"
+  }
+}
