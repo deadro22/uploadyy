@@ -6,6 +6,53 @@ const fileDisplayContainer = document.getElementById("file-list-container");
 const uploadInfoContainer = document.getElementById("fl-upload-info");
 const appStats = document.getElementById("appGlobalStats");
 
+const makeErrorNotification = (err) => {
+  appStats.style.visibility = "visible";
+  appStats.style.backgroundColor = "red";
+  appStats.innerText = err;
+  setTimeout(() => {
+    appStats.style.visibility = "hidden";
+  }, 2000);
+};
+
+const makeSuccessNotification = (msg) => {
+  appStats.style.visibility = "visible";
+  appStats.style.backgroundColor = "rgb(71, 175, 76)";
+  appStats.innerText = msg;
+  setTimeout(() => {
+    appStats.style.visibility = "hidden";
+  }, 2000);
+};
+
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.id === "br_f") {
+    fileInput.click();
+  } else if (e.target && e.target.id === "btn-clr-fl") {
+    e.target.parentNode.remove();
+    const prevHistory = JSON.parse(localStorage.getItem("history"));
+    const attr = e.target.getAttribute("data-flname");
+    prevHistory[attr] && delete prevHistory[attr];
+    localStorage.setItem("history", JSON.stringify(prevHistory));
+  } else if (e.target && e.target.id === "dw-fl-info") {
+    window.open(e.target.getAttribute("data-url"), "_blank");
+  } else if (e.target && e.target.id === "cpy-fl-info") {
+    copyTextToClipboard(e.target.getAttribute("data-url"));
+  }
+});
+
+const clearDisp = (ev) => {
+  uploadInfoContainer.innerHTML = `
+            Drop your files here<br />
+            or
+            <span id="br_f">Browse</span>
+            <input
+              type="file"
+              name="file"
+              style="display: none"
+              id="fl-upload-j"
+            />`;
+};
+
 const handleFileUpload = function (file) {
   document.getElementById("fl-upload-info").innerHTML =
     "<div><p>Uploading " +
@@ -20,24 +67,19 @@ const handleFileUpload = function (file) {
     .then((response) => response.json())
     .then((success) => {
       if (success.error) {
-        uploadInfoContainer.innerHTML = "<h2>" + success.error + "</h2>";
+        makeErrorNotification(success.error);
+        uploadInfoContainer.innerHTML =
+          "<h3>" +
+          success.error +
+          "</h3>" +
+          '<button id="clr-btn" onclick="clear">Clear</button>';
+        document.getElementById("clr-btn").addEventListener("click", clearDisp);
       } else {
-        uploadInfoContainer.innerHTML = `<h2 id="fl-stat-gen">File Uploaded</h2>
+        uploadInfoContainer.innerHTML = `<h3 id="fl-stat-gen">File Uploaded</h3>
            <a class="disp-info-c" target="_blank" href="${success.url}">${success.url}</a></br>
            <button id="clr-btn" onclick="clear">Clear</button>
            `;
-        document.getElementById("clr-btn").addEventListener("click", (ev) => {
-          uploadInfoContainer.innerHTML = `
-                  Drop your files here<br />
-                  or
-                  <span id="br_f">Browse</span>
-                  <input
-                    type="file"
-                    name="file"
-                    style="display: none"
-                    id="fl-upload-j"
-                  />`;
-        });
+        document.getElementById("clr-btn").addEventListener("click", clearDisp);
         const prevHistory = JSON.parse(localStorage.getItem("history"));
 
         localStorage.setItem(
@@ -55,26 +97,8 @@ const handleFileUpload = function (file) {
       }
     })
     .catch((e) => {
-      console.log(e);
+      makeErrorNotification(e.message);
     });
-};
-
-const makeErrorNotification = (err) => {
-  appStats.style.visibility = "visible";
-  appStats.style.backgroundColor = "red";
-  appStats.innerText = err;
-  setTimeout(() => {
-    appStats.style.visibility = "hidden";
-  }, 2000);
-};
-
-const makeSuccessNotification = (msg) => {
-  appStats.style.visibility = "visible";
-  appStats.style.backgroundColor = "rgb(71, 175, 76)";
-  appStats.innerText = msg;
-  setTimeout(() => {
-    appStats.style.visibility = "hidden";
-  }, 2000);
 };
 
 const copyTextToClipboard = (text) => {
@@ -113,22 +137,6 @@ dropArea.addEventListener("dragenter", dropHandler, false);
 dropArea.addEventListener("dragleave", dropHandler, false);
 dropArea.addEventListener("dragover", dropHandler, false);
 dropArea.addEventListener("drop", dropHandler, false);
-
-document.addEventListener("click", function (e) {
-  if (e.target && e.target.id === "br_f") {
-    fileInput.click();
-  } else if (e.target && e.target.id === "btn-clr-fl") {
-    e.target.parentNode.remove();
-    const prevHistory = JSON.parse(localStorage.getItem("history"));
-    const attr = e.target.getAttribute("data-flname");
-    prevHistory[attr] && delete prevHistory[attr];
-    localStorage.setItem("history", JSON.stringify(prevHistory));
-  } else if (e.target && e.target.id === "dw-fl-info") {
-    window.open(e.target.getAttribute("data-url"), "_blank");
-  } else if (e.target && e.target.id === "cpy-fl-info") {
-    copyTextToClipboard(e.target.getAttribute("data-url"));
-  }
-});
 
 const fileDisplayHistory = (data) => `<div class="file-disp">
 <img src="download.png" id="dw-fl-info" data-url="${data.url}"/>
