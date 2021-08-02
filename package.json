@@ -4,7 +4,8 @@
   "description": "An app for sahring files between 2 computers",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "deploy": "git add . && git commit -m 'auto-depl' && git push -u origin master"
   },
   "repository": {
     "type": "git",
