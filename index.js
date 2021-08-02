@@ -21,6 +21,8 @@ app.get("/upload", (req, res) => {
 
 app.use("/api/file", upload);
 
-app.listen(4000, () => {
-  console.log("Listening on port 4000");
+app.get("*", (req, res) => {
+  res.redirect("/upload");
 });
+
+app.listen(process.env.PORT);
