@@ -98,6 +98,7 @@ const handleFileUpload = function (file) {
     })
     .catch((e) => {
       makeErrorNotification(e.message);
+      clearDisp();
     });
 };
 
